@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Login / Signup - Sardar Kartar Singh Jhabbar</title>
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script>
+const API_URL = "http://localhost:5000/api"; // backend base URL
+
+async function loginUser(e) {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    localStorage.setItem("token", data.token);
+    alert("Login successful!");
+    window.location.href = "student.html"; // redirect
+  } else {
+    alert(data.msg || "Login failed");
+  }
+}
+
+async function signupUser(e) {
+  e.preventDefault();
+  const name = document.getElementById("signupName").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+  const role = document.getElementById("signupRole").value;
+
+   const filesInput = document.getElementById("signupDocs");
+  const files = filesInput && filesInput.files.length > 0
+      ? Array.from(filesInput.files).map(f => f.name)  // ya FormData me bhejo
+      : [];
+
+  const res = await fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password, role })
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    alert("Signup successful! Please login.");
+  } else {
+    alert(data.msg || "Signup failed");
+  }
+}
+</script>
+
+
+    <style>
+        .form-section { 
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="login-page">
+
+    <!-- Header -->
+    <header id="header" class="header d-flex align-items-center sticky-top">
+        <div class="container-fluid container-xl d-flex align-items-center">
+            <a href="index.html" class="logo me-auto">
+                <h1 class="sitename">Sardar Kartar Singh Jhabbar</h1>
+            </a>
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="pricing.html">Donation</a></li>
+                    <li><a href="student.html">Students</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="login.html" class="active">Login</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+        </div>
+    </header>
+    <!-- End Header -->
+
+    <main class="main">
+        <div class="page-title dark-background text-center py-4">
+            <h1>User Portal</h1>
+            <p>Login or Signup to continue</p>
+        </div>
+
+        <section class="section">
+            <div class="container">
+                <div class="d-flex justify-content-center mb-4">
+                    <button id="showLogin" class="btn btn-outline-primary me-2">Login</button>
+                    <button id="showSignup" class="btn btn-outline-success">Signup</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="form-section active card shadow p-4 col-lg-6 mx-auto">
+                    <h3 class="text-center mb-3">Login</h3>
+                    <form onsubmit="loginUser(event)">
+                        <div class="mb-3">
+                            <label for="loginRole" class="form-label">Select Role</label>
+                            <select class="form-select" id="loginRole" required>
+                                <option value="">-- Choose Role --</option>
+                                <option value="student">Student</option>
+                                <option value="donor">Donor</option>
+                            </select>
+                        </div>
+                          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+</div>
+
+                <!-- Signup Form -->
+<!-- Signup Form -->
+<div id="signupForm" class="form-section card shadow p-4 col-lg-6 mx-auto">
+  <h3 class="text-center mb-3">Signup</h3>
+  <form onsubmit="signupUser(event)" enctype="multipart/form-data">
+    
+    <!-- Role -->
+    <div class="mb-3">
+      
+      <label for="signupRole" class="form-label">Select Role</label>
+      <select class="form-select" id="signupRole" required>
+        <option value="">-- Choose Role --</option>
+        <option value="student">Student</option>
+        <option value="donor">Donor</option>
+      </select>
+    </div>
+
+    <!-- Full Name -->
+    <div class="mb-3">
+      <label for="signupName" class="form-label">Full Name</label>
+      <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="signupEmail" class="form-label">Email</label>
+      <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label for="signupPassword" class="form-label">Password</label>
+      <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+    </div>
+
+    <!-- Student-specific fields -->
+    <div class="student-fields" style="display:none;">
+      <div class="mb-3">
+        <label for="signupCourse" class="form-label">Program / Course</label>
+        <input type="text" id="signupCourse" class="form-control" placeholder="e.g. B.Tech CSE" >
+      </div >
+      <div class="mb-3">
+        <label for="signupDocs" class="form-label">Upload Documents (PDF/JPG/PNG)</label>
+        <input type="file" id="signupDocs" class="form-control" accept=".pdf,.jpg,.jpeg,.png" multiple >
+      </div>
+    </div>
+
+    <!-- Donor-specific fields -->
+    <div class="donor-fields" style="display:none;">
+      <div class="mb-3">
+        <label for="signupDonation" class="form-label">Donation Amount</label>
+        <input type="number" id="signupDonation" class="form-control" placeholder="Enter donation amount" >
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-success w-100">Signup</button>
+  
+  </form>
+</div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+   
+  <footer id="footer" class="footer position-relative light-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">Sardar Kartar Singh Jhabbar</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>NGO Office Address</p>
+            <p>Punjab, India</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>+91 XXXXX XXXXX</span></p>
+            <p><strong>Email:</strong> <span>info@ngosite.org</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html" class="active">Home<br></a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="pricing.html">donation</a></li>
+            <li><a href="student.html">Students</a></li>
+            <li><a href="contact.html">Contact</a></li>
+              <li><a href="login.html" class="active">Login</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+    <!-- JS -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const showLogin = document.getElementById('showLogin');
+        const showSignup = document.getElementById('showSignup');
+        const signupRole = document.getElementById('signupRole');
+        const studentFields = document.querySelector('.student-fields');
+        const donorFields = document.querySelector('.donor-fields');
+
+        showLogin.addEventListener('click', () => {
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        });
+
+        showSignup.addEventListener('click', () => {
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+
+        signupRole.addEventListener('change', () => {
+            studentFields.style.display = signupRole.value === 'student' ? 'block' : 'none';
+            donorFields.style.display = signupRole.value === 'donor' ? 'block' : 'none';
+        });
+    </script>
+
+</body>
+
+</html>
